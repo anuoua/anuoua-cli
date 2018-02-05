@@ -1,6 +1,9 @@
 const program = require('commander')
 const chalk = require('chalk')
+const createTypescriptProject = require('./createTypescriptProject')
 const packageVersion = require('../package.json').version
+
+const defaultProject = 'typescript-node'
 
 program
 	.version(packageVersion, '-v, --version')
@@ -9,11 +12,14 @@ program
 program
 	.command('create <project-name>')
 	.description('create a project')
-	.option('-t, --type <project-type>', 'Specify project type such as typescript', (value) => {
-
-	}, 'typescript')
+	.option('-t, --type <project-type>', `Specify project type such as ${defaultProject}`, value => {
+		if (value !== 'typescript-node') {
+			throw new Error(`-t, --type  Now only support ${defaultProject}`)
+		}
+		return defaultProject
+	}, defaultProject)
 	.action((projectName, cmd) => {
-		console.log(projectName, cmd.type)
+		createTypescriptProject(projectName, cmd)
 	})
 
 program.on('--help', () => {
