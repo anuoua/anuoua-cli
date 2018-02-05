@@ -1,0 +1,37 @@
+{
+  "name": "anuoua-cli",
+  "version": "0.0.1",
+  "description": "CLI for typescript some project",
+  "main": "./src/index.js",
+  "bin": {
+    "anuoua-cli": "anuoua.js"
+  },
+  "dependencies": {
+    "chalk": "^2.3.0",
+    "commander": "^2.13.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1"
+  },
+  "scripts": {
+    "start": "node ./src/index.js",
+    "lint": "eslint ./src/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anuoua/anuoua-cli.git"
+  },
+  "keywords": [
+    "CLI"
+  ],
+  "author": "anuoua",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anuoua/anuoua-cli/issues"
+  },
+  "homepage": "https://github.com/anuoua/anuoua-cli#readme"
+}
