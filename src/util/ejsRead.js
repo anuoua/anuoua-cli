@@ -1,18 +1,13 @@
-const { promisify } = require('util')
 const mustache = require('mustache')
-const fs = require('fs')
-
-const readFile = promisify(fs.readFile)
+const { readFile } = require('./fsExtra')
 
 /**
  * render file with template and return rendered file content
- * @param  {string} path
- * @param  {any} templateOption
+ * @param  {string} path file path
+ * @param  {any} view mustache template option
  * @returns {string}
  */
 exports.ejsRead = async (path, view) => {
 	const buffer = await readFile(path)
 	return mustache.render(buffer.toString(), view)
 }
-
-exports.writeFile = promisify(fs.writeFile)

@@ -1,13 +1,15 @@
 const { promisify } = require('util')
 const glob = promisify(require('glob'))
 const path = require('path')
+const { writeFile } = require('./util/fsExtra')
 const mkdirp = promisify(require('mkdirp'))
 // const inquirer = require('inquirer')
-// const downloadGitRepo = promisify(require('download-git-repo'))
-const { ejsRead, writeFile } = require('./util/ejsRead')
+const downloadGitRepo = promisify(require('download-git-repo'))
+const { ejsRead } = require('./util/ejsRead')
 
 module.exports = async function createTypescriptProject(projectName, cmd) {
-	// await downloadGitRepo('anuoua/typescript-project-template', '.tmp/repo')
+	const { type } = cmd
+	await downloadGitRepo('anuoua/typescript-project-template', '.tmp/repo')
 	const pathArr = await glob('.tmp/repo/**/*.*', { dot: true })
 	pathArr.forEach(async onePath => {
 		try {
