@@ -1,7 +1,0 @@
-{
-    "extends": "tslint-config-airbnb",
-    "rules": {
-				"semicolon": [true, "never"],
-				"ter-indent": [true, "tab"]
-    }
-}
