@@ -17,6 +17,14 @@ async function createOne(projectDirectory, onePath, answer) {
 	await writeFile(generatePath, renderedContent)
 }
 
+async function getRepository() {
+	try {
+		return (await gitConfig('./.git/config'))['remote "origin"'].url
+	} catch (err) {
+		return undefined
+	}
+}
+
 module.exports = async function createTypescriptProject(projectType, projectDirectory) {
 	await downloadGitRepo(`anuoua-cli-templates/${projectType}`, './.tmp/repo')
 	if (!projectDirectory) {
@@ -56,7 +64,7 @@ module.exports = async function createTypescriptProject(projectType, projectDire
 			type: 'input',
 			name: 'projectRepository',
 			message: 'Git repository',
-			default: (await gitConfig('./.git/config'))['remote "origin"'].url && undefined,
+			default: await getRepository(),
 		},
 		{
 			type: 'input',
