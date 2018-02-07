@@ -10,10 +10,12 @@
     "chalk": "^2.3.0",
     "commander": "^2.13.0",
     "download-git-repo": "^1.0.2",
+    "git-config": "0.0.7",
     "glob": "^7.1.2",
     "inquirer": "^5.0.1",
     "mkdirp": "^0.5.1",
-    "mustache": "^2.3.0"
+    "mustache": "^2.3.0",
+    "rimraf": "^2.6.2"
   },
   "devDependencies": {
     "eslint": "^4.17.0",

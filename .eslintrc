@@ -6,6 +6,7 @@
 		"no-console": "off",
 		"no-tabs": "off",
 		"arrow-parens": ["error", "as-needed"],
-		"no-unused-vars": "warn"
+		"no-unused-vars": "warn",
+		"no-restricted-syntax": "off"
 	}
 }

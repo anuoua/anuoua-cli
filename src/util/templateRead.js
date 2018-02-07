@@ -7,7 +7,7 @@ const { readFile } = require('./fsExtra')
  * @param  {any} view mustache template option
  * @returns {string}
  */
-exports.ejsRead = async (path, view) => {
+module.exports = async (path, view) => {
 	const buffer = await readFile(path)
 	return mustache.render(buffer.toString(), view)
 }

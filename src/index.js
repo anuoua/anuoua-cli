@@ -3,23 +3,26 @@ const chalk = require('chalk')
 const createTypescriptProject = require('./createTypescriptProject')
 const packageVersion = require('../package.json').version
 
-const defaultProject = 'typescript-node'
-
 program
 	.version(packageVersion, '-v, --version')
 	.usage('<command> [options]')
 
 program
-	.command('create <project-name>')
-	.description('create a project')
-	.option('-t, --type <project-type>', `Specify project type such as ${defaultProject}`, value => {
+	.command('create <project-type> [project-directory]')
+	.description('create a project with <project-type> and optional [project-directory]')
+	/* .option('-t, --type <project-type>',
+				`Specify project type such as ${defaultProject}`, value => {
 		if (value !== 'typescript-node') {
 			throw new Error(`-t, --type  Now only support ${defaultProject}`)
 		}
 		return defaultProject
-	}, defaultProject)
-	.action((projectName, cmd) => {
-		createTypescriptProject(projectName, cmd)
+	}, defaultProject) */
+	.action(async (projectType, projectDirectory) => {
+		try {
+			await createTypescriptProject(projectType, projectDirectory)
+		} catch (err) {
+			console.log(err)
+		}
 	})
 
 program.on('--help', () => {

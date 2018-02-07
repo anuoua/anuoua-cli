@@ -1,24 +1,75 @@
 const { promisify } = require('util')
 const glob = promisify(require('glob'))
 const path = require('path')
-const { writeFile } = require('./util/fsExtra')
+const gitConfig = promisify(require('git-config'))
 const mkdirp = promisify(require('mkdirp'))
-// const inquirer = require('inquirer')
+const rimraf = promisify(require('rimraf'))
+const inquirer = require('inquirer')
+const chalk = require('chalk')
 const downloadGitRepo = promisify(require('download-git-repo'))
-const { ejsRead } = require('./util/ejsRead')
+const { writeFile } = require('./util/fsExtra')
+const templateRead = require('./util/templateRead')
 
-module.exports = async function createTypescriptProject(projectName, cmd) {
-	const { type } = cmd
-	await downloadGitRepo('anuoua/typescript-project-template', '.tmp/repo')
-	const pathArr = await glob('.tmp/repo/**/*.*', { dot: true })
-	pathArr.forEach(async onePath => {
-		try {
-			const renderedContent = await ejsRead(onePath, { projectName: 'jsdoifj-sdfsdf' })
-			const generatePath = path.resolve('./.tmp/generate/test_path', path.relative('./.tmp/repo/test_path', onePath))
-			await mkdirp(path.dirname(generatePath))
-			await writeFile(generatePath, renderedContent)
-		} catch (err) {
-			console.log(err)
+async function createOne(projectDirectory, onePath, answer) {
+	const renderedContent = await templateRead(onePath, { ...answer })
+	const generatePath = path.resolve(projectDirectory || './', path.relative('./.tmp/repo/template', onePath))
+	await mkdirp(path.dirname(generatePath))
+	await writeFile(generatePath, renderedContent)
+}
+
+module.exports = async function createTypescriptProject(projectType, projectDirectory) {
+	await downloadGitRepo(`anuoua-cli-templates/${projectType}`, './.tmp/repo')
+	if (!projectDirectory) {
+		const result = await inquirer.prompt([{
+			type: 'confirm',
+			name: 'confirm',
+			message: 'Create project in this directory',
+		}])
+		if (!result.confirm) {
+			console.log(chalk.red('\nPlease recreate project with appropriate directory\n'))
+			process.exit(0)
 		}
-	})
+	}
+	const answer = await inquirer.prompt([
+		{
+			type: 'input',
+			name: 'projectName',
+			message: 'Project name',
+			validate(value) {
+				const pass = /^(?:@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(value)
+				return pass || 'Please enter a valid project name, it should match the pattern of "^(?:@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"'
+			},
+		},
+		{
+			type: 'input',
+			name: 'projectDescription',
+			message: 'Project description',
+			default: 'A new typescript node project',
+		},
+		{
+			type: 'input',
+			name: 'projectAuthor',
+			message: 'Author',
+			default: (await gitConfig()).user.email,
+		},
+		{
+			type: 'input',
+			name: 'projectRepository',
+			message: 'Git repository',
+			default: (await gitConfig('./.git/config'))['remote "origin"'].url && undefined,
+		},
+		{
+			type: 'input',
+			name: 'projectLicense',
+			message: 'License ( MIT ISC... )',
+			default: 'NONE',
+		},
+	])
+	const pathArr = await glob('.tmp/repo/template/**/*.*', { dot: true })
+	const prArr = []
+	for (const onePath of pathArr) {
+		prArr.push(createOne(projectDirectory, onePath, answer))
+	}
+	await Promise.all(prArr)
+	await rimraf('./.tmp')
 }
