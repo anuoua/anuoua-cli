@@ -10,13 +10,6 @@ program
 program
 	.command('create <project-type> [project-name]')
 	.description('create a project with <project-type> and optional [project-name]')
-	/* .option('-t, --type <project-type>',
-				`Specify project type such as ${defaultProject}`, value => {
-		if (value !== 'typescript-node') {
-			throw new Error(`-t, --type  Now only support ${defaultProject}`)
-		}
-		return defaultProject
-	}, defaultProject) */
 	.action(async (projectType, projectName) => {
 		try {
 			await createTypescriptProject(projectType, projectName)
