@@ -6,6 +6,7 @@ const mkdirp = promisify(require('mkdirp'))
 const rimraf = promisify(require('rimraf'))
 const inquirer = require('inquirer')
 const chalk = require('chalk')
+const ora = require('ora')
 const downloadGitRepo = promisify(require('download-git-repo'))
 const { writeFile } = require('../util/fsExtra')
 const templateRead = require('../util/templateRead')
@@ -26,7 +27,22 @@ async function getRepository() {
 }
 
 module.exports = async function createTypescriptProject(projectType, createDirectory) {
-	await downloadGitRepo(`anuoua-cli-templates/${projectType}`, './.tmp/repo')
+	let spinner
+	try {
+		spinner = ora(`Downloading ${projectType} project`).start()
+		await downloadGitRepo(`anuoua-cli-templates/${projectType}`, './.tmp/repo')
+		spinner.succeed()
+	} catch (err) {
+		if (err.statusCode === 404) {
+			spinner.fail()
+			const template = chalk.cyan(`${projectType}`)
+			const message = chalk.red('project template not found, please search projects template in https://github.com/anuoua-cli-templates')
+			console.log(`\n${template} ${message}\n`)
+			process.exit(1)
+		}
+		throw new Error(err)
+	}
+
 	if (!createDirectory) {
 		const result = await inquirer.prompt([{
 			type: 'confirm',
@@ -35,7 +51,7 @@ module.exports = async function createTypescriptProject(projectType, createDirec
 		}])
 		if (!result.confirm) {
 			console.log(chalk.red('\nPlease recreate project with appropriate directory\n'))
-			process.exit(0)
+			process.exit(1)
 		}
 	}
 	const answer = await inquirer.prompt([
@@ -43,6 +59,7 @@ module.exports = async function createTypescriptProject(projectType, createDirec
 			type: 'input',
 			name: 'projectName',
 			message: 'Project name',
+			default: createDirectory || path.basename(process.cwd()),
 			validate(value) {
 				const pass = /^(?:@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(value)
 				return pass || 'Please enter a valid project name, it should match the pattern of "^(?:@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"'
@@ -52,7 +69,7 @@ module.exports = async function createTypescriptProject(projectType, createDirec
 			type: 'input',
 			name: 'projectDescription',
 			message: 'Project description',
-			default: 'A new typescript node project',
+			default: 'A new great project',
 		},
 		{
 			type: 'input',

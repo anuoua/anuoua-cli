@@ -8,8 +8,8 @@ program
 	.usage('<command> [options]')
 
 program
-	.command('create <project-type> [create-directory]')
-	.description('create a project with <project-type> and optional [create-directory]')
+	.command('create <project-type> [project-name]')
+	.description('create a project with <project-type> and optional [project-name]')
 	/* .option('-t, --type <project-type>',
 				`Specify project type such as ${defaultProject}`, value => {
 		if (value !== 'typescript-node') {
@@ -17,9 +17,9 @@ program
 		}
 		return defaultProject
 	}, defaultProject) */
-	.action(async (projectType, createDirectory) => {
+	.action(async (projectType, projectName) => {
 		try {
-			await createTypescriptProject(projectType, createDirectory)
+			await createTypescriptProject(projectType, projectName)
 		} catch (err) {
 			console.log(err)
 		}
