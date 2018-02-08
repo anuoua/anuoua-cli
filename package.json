@@ -34,6 +34,7 @@
     "url": "git+https://github.com/anuoua/anuoua-cli.git"
   },
   "keywords": [
+		"anuoua",
     "CLI"
   ],
   "author": "anuoua",
