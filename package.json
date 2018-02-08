@@ -1,10 +1,10 @@
 {
   "name": "anuoua-cli",
   "version": "0.0.1",
-  "description": "CLI for typescript some project",
+  "description": "CLI for initialize project",
   "main": "./src/index.js",
   "bin": {
-    "anuoua-cli": "anuoua.js"
+    "anuoua": "bin/anuoua.js"
   },
   "dependencies": {
     "chalk": "^2.3.0",

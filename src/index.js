@@ -1,6 +1,6 @@
 const program = require('commander')
 const chalk = require('chalk')
-const createTypescriptProject = require('./createTypescriptProject')
+const createTypescriptProject = require('./projects/typescriptNode')
 const packageVersion = require('../package.json').version
 
 program
@@ -8,8 +8,8 @@ program
 	.usage('<command> [options]')
 
 program
-	.command('create <project-type> [project-directory]')
-	.description('create a project with <project-type> and optional [project-directory]')
+	.command('create <project-type> [create-directory]')
+	.description('create a project with <project-type> and optional [create-directory]')
 	/* .option('-t, --type <project-type>',
 				`Specify project type such as ${defaultProject}`, value => {
 		if (value !== 'typescript-node') {
@@ -17,9 +17,9 @@ program
 		}
 		return defaultProject
 	}, defaultProject) */
-	.action(async (projectType, projectDirectory) => {
+	.action(async (projectType, createDirectory) => {
 		try {
-			await createTypescriptProject(projectType, projectDirectory)
+			await createTypescriptProject(projectType, createDirectory)
 		} catch (err) {
 			console.log(err)
 		}

@@ -7,12 +7,12 @@ const rimraf = promisify(require('rimraf'))
 const inquirer = require('inquirer')
 const chalk = require('chalk')
 const downloadGitRepo = promisify(require('download-git-repo'))
-const { writeFile } = require('./util/fsExtra')
-const templateRead = require('./util/templateRead')
+const { writeFile } = require('../util/fsExtra')
+const templateRead = require('../util/templateRead')
 
-async function createOne(projectDirectory, onePath, answer) {
+async function createOne(createDirectory, onePath, answer) {
 	const renderedContent = await templateRead(onePath, { ...answer })
-	const generatePath = path.resolve(projectDirectory || './', path.relative('./.tmp/repo/template', onePath))
+	const generatePath = path.resolve(createDirectory || './', path.relative('./.tmp/repo/template', onePath))
 	await mkdirp(path.dirname(generatePath))
 	await writeFile(generatePath, renderedContent)
 }
@@ -25,9 +25,9 @@ async function getRepository() {
 	}
 }
 
-module.exports = async function createTypescriptProject(projectType, projectDirectory) {
+module.exports = async function createTypescriptProject(projectType, createDirectory) {
 	await downloadGitRepo(`anuoua-cli-templates/${projectType}`, './.tmp/repo')
-	if (!projectDirectory) {
+	if (!createDirectory) {
 		const result = await inquirer.prompt([{
 			type: 'confirm',
 			name: 'confirm',
@@ -76,7 +76,7 @@ module.exports = async function createTypescriptProject(projectType, projectDire
 	const pathArr = await glob('.tmp/repo/template/**/*.*', { dot: true })
 	const prArr = []
 	for (const onePath of pathArr) {
-		prArr.push(createOne(projectDirectory, onePath, answer))
+		prArr.push(createOne(createDirectory, onePath, answer))
 	}
 	await Promise.all(prArr)
 	await rimraf('./.tmp')
