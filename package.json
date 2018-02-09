@@ -1,6 +1,6 @@
 {
   "name": "anuoua-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "CLI for initialize project",
   "main": "./src/index.js",
   "bin": {
