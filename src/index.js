@@ -9,6 +9,7 @@ program
 
 program
 	.command('create <template> [folder]')
+	.usage('<template> [folder]')
 	.description('create a project with <template> and optional [folder]')
 	.action(async (projectTemplate, projectFolder) => {
 		try {
