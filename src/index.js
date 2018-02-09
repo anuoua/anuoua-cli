@@ -1,6 +1,6 @@
 const program = require('commander')
 const chalk = require('chalk')
-const createTypescriptProject = require('./projects/typescriptNode')
+const createProject = require('./createProject')
 const packageVersion = require('../package.json').version
 
 program
@@ -8,11 +8,11 @@ program
 	.usage('<command> [options]')
 
 program
-	.command('create <project-type> [project-name]')
-	.description('create a project with <project-type> and optional [project-name]')
-	.action(async (projectType, projectName) => {
+	.command('create <template> [folder]')
+	.description('create a project with <template> and optional [folder]')
+	.action(async (projectTemplate, projectFolder) => {
 		try {
-			await createTypescriptProject(projectType, projectName)
+			await createProject(projectTemplate, projectFolder)
 		} catch (err) {
 			console.log(err)
 		}
